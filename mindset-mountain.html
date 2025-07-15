@@ -1,0 +1,535 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🌲 Forest Mindset Quest</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: 
+        radial-gradient(ellipse 140px 220px at 25% 25%, rgba(11, 61, 11, 0.8), transparent),
+        radial-gradient(ellipse 110px 190px at 75% 15%, rgba(24, 61, 24, 0.7), transparent),
+        radial-gradient(ellipse 130px 170px at 15% 75%, rgba(46, 125, 50, 0.6), transparent),
+        radial-gradient(ellipse 100px 150px at 85% 85%, rgba(11, 61, 11, 0.7), transparent),
+        linear-gradient(135deg, #0b3d0b, #1e1e1e);
+      color: #e0f7da;
+      font-family: 'Papyrus', fantasy, serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-top: 20px;
+      color: #c8e6c9;
+      text-shadow: 0 0 15px #2e7d32, 2px 2px 4px rgba(0,0,0,0.8);
+      font-weight: bold;
+    }
+
+    /* Intro Slides Styling */
+    #intro-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0b3d0b, #1e1e1e);
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .intro-slide {
+      background: linear-gradient(135deg, rgba(24, 61, 24, 0.9) 0%, rgba(46, 125, 50, 0.8) 100%);
+      border-radius: 20px;
+      border: 3px solid #2e7d32;
+      box-shadow: 0 0 30px rgba(46, 125, 50, 0.6);
+      padding: 40px;
+      margin: 25px;
+      max-width: 600px;
+      width: 90%;
+      color: #e0f7da;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .intro-slide h2 {
+      color: #c8e6c9;
+      font-size: 2.2em;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px #2e7d32;
+    }
+
+    .intro-slide p {
+      font-size: 1.2em;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+    }
+
+    .intro-slide ul {
+      text-align: left;
+      max-width: 400px;
+      margin: 20px 0;
+    }
+
+    .intro-slide img {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 15px;
+      border: 3px solid #2e7d32;
+      box-shadow: 0 0 20px rgba(46, 125, 50, 0.6);
+      margin: 20px 0;
+    }
+
+    .slide-btn {
+      background: linear-gradient(135deg, #2e7d32 0%, #66bb6a 100%);
+      color: #e0f7da;
+      border: 3px solid #2e7d32;
+      padding: 14px 28px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 18px;
+      margin: 15px;
+      transition: all 0.3s ease;
+      font-family: 'Papyrus', fantasy, serif;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+      box-shadow: 0 0 15px rgba(46, 125, 50, 0.6);
+    }
+
+    .slide-btn:hover {
+      background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(46, 125, 50, 0.8);
+    }
+
+    .lesson, .game-container, .message {
+      max-width: 720px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 24px;
+      border-radius: 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      margin: 20px;
+    }
+
+    .lesson h2 {
+      margin-top: 0;
+    }
+
+    .lesson p {
+      font-size: 1.1em;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    ul {
+      margin: 10px 0 20px 20px;
+    }
+
+    .btn-start, .btn-restart {
+      background: linear-gradient(135deg, #2e7d32 0%, #66bb6a 100%);
+      color: #e0f7da;
+      font-size: 1.2em;
+      padding: 15px 30px;
+      border: 3px solid #2e7d32;
+      border-radius: 12px;
+      cursor: pointer;
+      margin: 15px;
+      font-family: 'Papyrus', fantasy, serif;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+      box-shadow: 0 0 20px rgba(46, 125, 50, 0.6);
+      transition: all 0.3s ease;
+    }
+
+    .btn-start:hover, .btn-restart:hover {
+      background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(46, 125, 50, 0.8);
+    }
+
+    .color-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 25px;
+      background: rgba(24, 61, 24, 0.4);
+      padding: 20px;
+      border-radius: 15px;
+      border: 2px solid #2e7d32;
+    }
+
+    .color-btn {
+      width: 110px;
+      height: 110px;
+      margin: 15px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(46, 125, 50, 0.6), inset 0 0 20px rgba(255, 255, 255, 0.2);
+      border: 4px solid #2e7d32;
+      transition: all 0.3s ease;
+      outline: 3px solid #66bb6a;
+      position: relative;
+    }
+
+    .color-btn::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      right: -6px;
+      bottom: -6px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #2e7d32, #66bb6a, #2e7d32, #66bb6a);
+      z-index: -1;
+      animation: colorButtonGlow 3s linear infinite;
+    }
+
+    @keyframes colorButtonGlow {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    .color-btn:active {
+      transform: scale(0.9);
+    }
+
+    .color-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 35px rgba(46, 125, 50, 0.9);
+    }
+
+    .red { 
+      background: radial-gradient(circle at 30% 30%, #ff6b6b, #e94e4e, #c62828);
+      box-shadow: 0 0 20px rgba(233, 78, 78, 0.8);
+    }
+    .blue { 
+      background: radial-gradient(circle at 30% 30%, #74b9ff, #4f83ff, #1976d2);
+      box-shadow: 0 0 20px rgba(79, 131, 255, 0.8);
+    }
+    .green { 
+      background: radial-gradient(circle at 30% 30%, #6bcf7f, #3ed97e, #2e7d32);
+      box-shadow: 0 0 20px rgba(62, 217, 126, 0.8);
+    }
+    .yellow { 
+      background: radial-gradient(circle at 30% 30%, #fff176, #ffe25c, #f57f17);
+      box-shadow: 0 0 20px rgba(255, 226, 92, 0.8);
+    }
+
+    .message {
+      font-size: 1.3em;
+      text-align: center;
+      display: none;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+      background: rgba(24, 61, 24, 0.6);
+      border-radius: 12px;
+      padding: 20px;
+      border: 2px solid #2e7d32;
+    }
+
+    .forest-text {
+      font-style: italic;
+      color: #c8e6c9;
+      text-align: center;
+      font-size: 1.3em;
+      text-shadow: 0 0 10px #2e7d32;
+      background: rgba(24, 61, 24, 0.4);
+      padding: 15px;
+      border-radius: 10px;
+      border: 2px solid #2e7d32;
+      margin: 15px 0;
+    }
+
+    .sage-img {
+      width: 100px;
+      float: left;
+      margin-right: 15px;
+      border-radius: 50%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Intro Slides -->
+  <div id="intro-screen">
+    <div class="slides-container">
+
+      <!-- Slide 1: Welcome -->
+      <div id="slide-1" class="intro-slide">
+        <h2>🧠 Welcome to Memory Stone Peak!</h2>
+        <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&h=300&fit=crop&crop=center" alt="Sunbeams through mountain forest" />
+        <p>Greetings, brave adventurer! You're about to climb the mystical Memory Stone Peak.</p>
+        <p>This 3-level quest will strengthen your memory skills and develop a powerful growth mindset!</p>
+        <button class="slide-btn" onclick="nextSlide()">Begin My Climb! ⛰️</button>
+      </div>
+
+      <!-- Slide 2: Meet Sage -->
+      <div id="slide-2" class="intro-slide" style="display: none;">
+        <h2>🐿️ Meet Your Guide</h2>
+        <img src="https://images.unsplash.com/photo-1511593358241-7eea1f3c84e5?w=500&h=300&fit=crop&crop=center" alt="Wise forest creature" />
+        <p>I'm <strong>Sage the Squirrel</strong>, your wise guide through this memory adventure!</p>
+        <p>I'll teach you about the power of having a <strong>growth mindset</strong> - the belief that you can get smarter and better at things through practice and effort.</p>
+        <p>Ready to grow your brain? 🧠✨</p>
+        <button class="slide-btn" onclick="nextSlide()">Begin My Adventure! 🌿</button>
+      </div>
+
+      <!-- Slide 3: Growth vs Fixed Mindset -->
+      <div id="slide-3" class="intro-slide" style="display: none;">
+        <h2>🌱 Growth Mindset Magic</h2>
+        <img src="https://images.unsplash.com/photo-1524656855800-59465ebee984?w=500&h=300&fit=crop&crop=center" alt="Growing plants in forest" />
+        <p><strong>Growth Mindset</strong> sounds like:</p>
+        <ul>
+          <li>💪 "I can't do this... <strong>yet!</strong>"</li>
+          <li>🌟 "Mistakes help me learn."</li>
+          <li>🚀 "If I keep trying, I'll get better."</li>
+        </ul>
+        <p><strong>Fixed Mindset</strong> sounds like:</p>
+        <ul>
+          <li>😔 "I'm just not good at this."</li>
+          <li>❌ "If I fail, it means I'm not smart."</li>
+        </ul>
+        <button class="slide-btn" onclick="nextSlide()">I Choose Growth! 🌱</button>
+      </div>
+
+      <!-- Slide 4: How to Play -->
+      <div id="slide-4" class="intro-slide" style="display: none;">
+        <h2>🎮 Memory Stone Challenge</h2>
+        <img src="https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=500&h=300&fit=crop&crop=center" alt="Glowing mountain trail" />
+        <p>Here's how to conquer the 3-level memory challenge:</p>
+        <ul>
+          <li>🌈 Watch the magical stone pattern light up</li>
+          <li>🎯 Click the stones in the <strong>same order</strong> you saw them</li>
+          <li>⬆️ Each level adds one more stone to remember (levels 1-3)</li>
+          <li>🧠 Use your growth mindset when it gets tricky!</li>
+          <li>🏆 Complete all 3 levels to master the peak!</li>
+        </ul>
+        <button class="slide-btn" onclick="startGame()">Start My Memory Quest! 🚀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Content -->
+  <div id="game-content" style="display: none;">
+    <h1>🧠 Memory Stone Peak</h1>
+
+    <div class="game-container" id="game">
+      
+      <div class="color-buttons">
+        <button class="color-btn red" onclick="handleColorClick('red')"></button>
+        <button class="color-btn blue" onclick="handleColorClick('blue')"></button>
+        <button class="color-btn green" onclick="handleColorClick('green')"></button>
+        <button class="color-btn yellow" onclick="handleColorClick('yellow')"></button>
+      </div>
+      <div style="text-align: center;">
+        <button class="btn-restart" onclick="restartGame()">🔄 Restart Level</button>
+      </div>
+    </div>
+
+    <div id="message" class="message"></div>
+    <div id="reflection" class="reflection-section" style="display: none;"></div>
+
+    <script>
+      // Game variables
+      let currentLevel = 1;
+      const maxLevel = 3;
+      let sequence = [];
+      let playerSequence = [];
+      let isShowingSequence = false;
+      let sequenceIndex = 0;
+      let currentSlide = 1;
+
+      const colors = ['red', 'blue', 'green', 'yellow'];
+      const growthMessages = [
+        "🌱 Remember: Every mistake is a chance to grow stronger!",
+        "🧠 Your brain is like a muscle - it gets stronger with practice!",
+        "⭐ Challenges help you discover what you're truly capable of!",
+        "🚀 The effort you put in today builds tomorrow's success!",
+        "💪 You're not failing, you're learning a new way that doesn't work!",
+        "🌟 Each attempt teaches your brain something new!",
+        "🎯 Focus on progress, not perfection!",
+        "🌈 Your potential grows every time you try again!"
+      ];
+
+      // Initialize when page loads
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('intro-screen').style.display = 'flex';
+        document.getElementById('game-content').style.display = 'none';
+      });
+
+      // Slide navigation functions
+      function nextSlide() {
+        document.getElementById('slide-' + currentSlide).style.display = "none";
+        currentSlide++;
+        if (currentSlide <= 4) {
+          document.getElementById('slide-' + currentSlide).style.display = "block";
+        }
+      }
+
+      function startGame() {
+        document.getElementById("intro-screen").style.display = "none";
+        document.getElementById("game-content").style.display = "block";
+        initGame();
+      }
+
+      // Game functions
+      function initGame() {
+        currentLevel = 1;
+        startLevel();
+      }
+
+      
+
+      function startLevel() {
+        sequence = [];
+        playerSequence = [];
+        const messageEl = document.getElementById('message');
+        messageEl.textContent = "🎵 Watch the magical stone pattern...";
+        
+        // Generate sequence for current level
+        for (let i = 0; i < currentLevel; i++) {
+          sequence.push(colors[Math.floor(Math.random() * colors.length)]);
+        }
+        
+        setTimeout(() => {
+          showSequence();
+        }, 1000);
+      }
+
+      function showSequence() {
+        isShowingSequence = true;
+        sequenceIndex = 0;
+        const messageEl = document.getElementById('message');
+        messageEl.textContent = "✨ Memorize this pattern...";
+        
+        showNextColor();
+      }
+
+      function showNextColor() {
+        if (sequenceIndex < sequence.length) {
+          const color = sequence[sequenceIndex];
+          const button = document.querySelector(`.${color}`);
+          
+          button.style.opacity = '1';
+          button.style.transform = 'scale(1.1)';
+          button.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.8)';
+          
+          setTimeout(() => {
+            button.style.opacity = '0.7';
+            button.style.transform = 'scale(1)';
+            button.style.boxShadow = 'none';
+            
+            sequenceIndex++;
+            setTimeout(() => {
+              showNextColor();
+            }, 300);
+          }, 600);
+        } else {
+          isShowingSequence = false;
+          document.getElementById('message').textContent = "🎯 Now click the stones in the same order!";
+        }
+      }
+
+      function handleColorClick(color) {
+        if (isShowingSequence) return;
+        
+        playerSequence.push(color);
+        
+        // Check if current click is correct
+        const currentIndex = playerSequence.length - 1;
+        if (playerSequence[currentIndex] !== sequence[currentIndex]) {
+          wrongAnswer();
+          return;
+        }
+        
+        // Check if sequence is complete
+        if (playerSequence.length === sequence.length) {
+          correctSequence();
+        }
+      }
+
+      function correctSequence() {
+        const messageEl = document.getElementById('message');
+        messageEl.textContent = `🎉 Excellent! You remembered all ${currentLevel} stones!`;
+        
+        if (currentLevel >= maxLevel) {
+          winGame();
+        } else {
+          setTimeout(() => {
+            currentLevel++;
+            startLevel();
+          }, 2000);
+        }
+      }
+
+      function wrongAnswer() {
+        const messageEl = document.getElementById('message');
+        messageEl.innerHTML = `
+          <div style="color: #ffab91;">
+            ❌ Not quite right, but that's okay! 
+            <br><strong style="color: #81c784;">${getRandomGrowthMessage()}</strong>
+          </div>
+        `;
+        
+        setTimeout(() => {
+          startLevel();
+        }, 3000);
+      }
+
+      function restartGame() {
+        currentLevel = 1;
+        document.getElementById('message').textContent = "";
+        const reflectionEl = document.getElementById('reflection');
+        if (reflectionEl) {
+          reflectionEl.style.display = 'none';
+        }
+        startLevel();
+      }
+
+      function getRandomGrowthMessage() {
+        return growthMessages[Math.floor(Math.random() * growthMessages.length)];
+      }
+
+      function winGame() {
+        // Mark this level as complete
+        localStorage.setItem('mindsetMountainComplete', 'true');
+
+        const messageEl = document.getElementById('message');
+        messageEl.innerHTML = `
+          <div class="win-message">
+            <h2>🎉 Congratulations, Memory Master!</h2>
+            <p>You've conquered all 3 levels of Memory Stone Peak and strengthened your growth mindset!</p>
+            <p>🧠 Remember: Your brain can grow stronger with practice and persistence.</p>
+            <p>🌟 Keep believing in yourself and never give up on learning!</p>
+            <button onclick="window.location.href='game.html'" style="background: #66bb6a; border: none; color: white; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 1.1em; margin-top: 15px;">🌲 Return to Crystal Quest</button>
+          </div>
+        `;
+        messageEl.style.display = 'block';
+        messageEl.style.background = 'linear-gradient(135deg, #2e7d32, #66bb6a)';
+        messageEl.style.color = '#e0f7da';
+        messageEl.style.border = '3px solid #4caf50';
+        messageEl.style.borderRadius = '15px';
+        messageEl.style.padding = '30px';
+        messageEl.style.boxShadow = '0 0 30px rgba(76, 175, 80, 0.6)';
+
+        document.getElementById('game').style.display = 'none';
+        
+        // Auto-redirect after 3 seconds
+        setTimeout(() => {
+          window.location.href = 'game.html';
+        }, 3000);
+      }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html> 
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crystal Keepers</title>
+    <style>
+      body {
+        font-family: 'Papyrus', fantasy, serif;
+        background: linear-gradient(#0b3d0b, #1e1e1e);
+        color: #e0f7da;
+        text-align: center;
+        margin: 0;
+        padding: 20px;
+      }
+
+      #cutscene {
+        max-width: 700px;
+        margin: 0 auto;
+        border: 3px solid #2e7d32;
+        border-radius: 12px;
+        padding: 20px;
+        background: #183d18;
+        box-shadow: 0 0 25px rgba(46, 125, 50, 0.6);
+      }
+
+      #sceneIMG {
+        width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      }
+
+      #captionText {
+        margin: 20px 0;
+        font-size: 1.3em;
+        font-weight: bold;
+        color: #c8e6c9;
+      }
+
+      button {
+        background-color: #66bb6a;
+        border: none;
+        color: white;
+        padding: 10px 25px;
+        margin: 10px 5px;
+        font-size: 1em;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+      }
+
+      button:hover {
+        background-color: #81c784;
+        transform: scale(1.05);
+      }
+
+      button:disabled {
+        background-color: #a5d6a7;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="cutscene">
+      <img id="sceneIMG" src="images/IMG_0005 (1).jpg" alt="Forest Scene" />
+      <p id="captionText">Welcome to the story...</p>
+      <br />
+      <button onclick="prevScene()">Previous</button>
+      <button onclick="nextScene()">Next</button>
+    </div>
+
+    <script>
+      const scenes = [
+        "IMG_0005 (1).jpg",
+        "IMG_0036.jpg",
+        "IMG_0042.jpg",
+        "IMG_0046.jpg",
+        "IMG_0048.jpg",
+        "IMG_0052.jpg",
+        "IMG_0058.jpg"
+      ];
+
+      const captions = [
+        "Welcome to Crystal Keepers, an enchanted forest adventure.",
+        "Adventurer! The ancient forest is in peril. A dark wizard stirs, calling a storm of shadows from deep within the trees.",
+        "The cursed mist spreads, twisting creatures into zombie-like horrors. The woodland cries for help.",
+        "But hope remains! You have been chosen by the spirit of the forest to stand against the storm.",
+        "You must strengthen your heart, solve ancient puzzles, and unite with nature's power.",
+        "Legends speak of three elemental crystals hidden in sacred forest groves. Only they can shatter the wizard's power.",
+        "Will you restore peace to the land, or will the forest fall into eternal night?"
+      ];
+
+      let index = 0;
+
+      function updateScene() {
+        document.getElementById("sceneIMG").src = "images/" + scenes[index];
+        document.getElementById("captionText").innerText = captions[index];
+      }
+
+      function nextScene() {
+        if (index < scenes.length - 1) {
+          index++;
+          updateScene();
+        } else {
+          window.location.href = "game.html"; // Move to main game
+        }
+      }
+
+      function prevScene() {
+        if (index > 0) {
+          index--;
+          updateScene();
+        }
+      }
+
+      // Initialize first scene
+      updateScene();
+    </script>
+  </body>
+</html>

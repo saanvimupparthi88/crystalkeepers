@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title> Reflection Maze</title>
+  <style>
+    body {
+      font-family: 'Papyrus', fantasy, serif;
+      background:
+        radial-gradient(ellipse 150px 250px at 20% 30%, rgba(11, 61, 11, 0.8), transparent),
+        radial-gradient(ellipse 100px 200px at 80% 20%, rgba(24, 61, 24, 0.7), transparent),
+        radial-gradient(ellipse 120px 180px at 30% 80%, rgba(46, 125, 50, 0.6), transparent),
+        radial-gradient(ellipse 90px 160px at 70% 90%, rgba(11, 61, 11, 0.7), transparent),
+        linear-gradient(135deg, #0b3d0b, #1e1e1e);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      color: #e0f7da;
+    }
+    h1 { color: #c8e6c9; font-size: 2.8em; margin-bottom: 15px; text-align: center; text-shadow: 0 0 15px #2e7d32, 2px 2px 4px rgba(0,0,0,0.8); font-weight: bold; }
+    .cell { width: 40px; height: 40px; box-sizing: border-box; border: 1px solid #d0f0c0; }
+    .wall { background-color: #004d00; }
+    .player { background-color: #f0e130; box-shadow: 0 0 12px 4px #fff75e inset; }
+    .goal { background-color: #98fb98; box-shadow: 0 0 12px 4px #2e8b57 inset; }
+    .think-zone { background-color: #d1ffd1; border: 2px dashed #32cd32; }
+    #tip { background: #fff9c4; border: 3px solid #ffeb3b; color: #555; font-weight: bold; display: none; max-width: 600px; margin: 10px auto; border-radius: 10px; padding: 15px; }
+    #stats { font-size: 18px; font-weight: 600; }
+    #message { margin-top: 12px; font-size: 20px; font-weight: bold; color: #2e8b57; }
+    button { background: linear-gradient(135deg, #2e7d32 0%, #66bb6a 100%); color: #e0f7da; border: 3px solid #2e7d32; padding: 14px 28px; border-radius: 12px; cursor: pointer; font-size: 16px; margin: 12px 8px; transition: all 0.3s ease; font-family: 'Papyrus', fantasy, serif; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); box-shadow: 0 0 15px rgba(46, 125, 50, 0.6); }
+    button:hover { background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%); transform: scale(1.05); box-shadow: 0 0 25px rgba(46, 125, 50, 0.8); }
+    textarea { width: 100%; margin: 10px 0; padding: 10px; border-radius: 8px; border: 2px solid #2e7d32; background: rgba(255,255,255,0.1); color: #e0f7da; font-family: inherit; }
+  </style>
+</head>
+<body>
+  <h1>🌲 Reflection Maze</h1>
+  <div id="game"></div>
+  <div id="stats"></div>
+  <div id="tip"></div>
+  <div id="message"></div>
+  <button id="nextBtn" style="display:none;">➡️ Next Level</button>
+  <div id="reflection" style="display:none;"></div>
+  <script>
+    const levels = [
+      {
+        name: "Level 1",
+        maze: [
+          [1,1,1,1,1,1,1,1,1,1],
+          [1,0,0,0,1,0,0,0,0,1],
+          [1,0,1,0,1,0,1,1,0,1],
+          [1,0,1,0,0,0,0,1,0,1],
+          [1,0,1,1,1,1,0,1,0,1],
+          [1,0,0,0,0,0,0,0,0,1],
+          [1,1,1,1,1,1,1,1,2,1]
+        ],
+        challenges: { "3,2": "Name one small goal.", "5,4": "How do you stay motivated?" },
+        tips: ["🎯 Plan ahead.", "🌱 Keep growing!"],
+        reflection: "How did planning help you today?"
+      },
+      {
+        name: "Level 2",
+        maze: [
+          [1,1,1,1,1,1,1,1,1,1],
+          [1,0,0,0,0,0,0,0,0,1],
+          [1,0,1,1,1,0,1,1,0,1],
+          [1,0,0,0,1,0,1,0,0,1],
+          [1,1,1,0,1,0,1,0,1,1],
+          [1,0,0,0,0,0,0,0,0,1],
+          [1,0,1,1,1,1,1,1,2,1]
+        ],
+        challenges: { "4,3": "What skill do you want to improve?", "6,5": "How do you practice it?" },
+        tips: ["🛠️ Practice often.", "💪 Stay consistent."],
+        reflection: "What did you learn about your skills?"
+      },
+      {
+        name: "Level 3",
+        maze: [
+          [1,1,1,1,1,1,1,1,1,1],
+          [1,0,1,0,0,0,0,1,0,1],
+          [1,0,1,0,1,1,0,1,0,1],
+          [1,0,0,0,1,0,0,0,0,1],
+          [1,1,1,0,1,0,1,1,1,1],
+          [1,0,0,0,0,0,0,0,0,1],
+          [1,2,1,1,1,1,1,1,1,1]
+        ],
+        challenges: { "2,3": "How do you learn from failure?", "7,5": "What is a growth mindset?" },
+        tips: ["🧠 Challenges build your brain.", "🌟 Mistakes help you grow."],
+        reflection: "How has your mindset changed?"
+      }
+    ];
+
+    let currentLevel = 0;
+    let moveCount = 0;
+    let playerPosition = { x: 1, y: 1 };
+    let answeredChallenges = {};
+
+    const gameContainer = document.getElementById("game");
+    const statsDiv = document.getElementById("stats");
+    const messageDiv = document.getElementById("message");
+    const tipBox = document.getElementById("tip");
+    const nextBtn = document.getElementById("nextBtn");
+    const reflection = document.getElementById("reflection");
+
+    function drawMaze() {
+      const level = levels[currentLevel];
+      gameContainer.innerHTML = "";
+      gameContainer.style.display = "grid";
+      gameContainer.style.gridTemplateColumns = `repeat(${level.maze[0].length}, 40px)`;
+      gameContainer.style.gridTemplateRows = `repeat(${level.maze.length}, 40px)`;
+      gameContainer.style.gap = "2px";
+
+      for (let y = 0; y < level.maze.length; y++) {
+        for (let x = 0; x < level.maze[y].length; x++) {
+          const cell = document.createElement("div");
+          cell.className = "cell";
+
+          if (level.maze[y][x] === 1) cell.classList.add("wall");
+          else if (level.maze[y][x] === 2) {
+            cell.classList.add("goal");
+            cell.textContent = "🎯";
+            cell.style.textAlign = "center";
+          } else {
+            const coordKey = `${x},${y}`;
+            if (level.challenges[coordKey]) {
+              cell.textContent = "🌟";
+              cell.style.textAlign = "center";
+              cell.style.background = "#ffeb3b";
+              cell.style.border = "2px solid #fbc02d";
+            } else {
+              cell.style.background = "#4caf50";
+            }
+          }
+
+          if (x === playerPosition.x && y === playerPosition.y) {
+            cell.textContent = "🧙‍♂️";
+            cell.style.background = "#ffcc02";
+            cell.style.border = "2px solid #ff8f00";
+            cell.style.textAlign = "center";
+          }
+
+          gameContainer.appendChild(cell);
+        }
+      }
+      statsDiv.innerHTML = `🌲 ${level.name} | Level: ${currentLevel + 1}/${levels.length} | Moves: ${moveCount}`;
+    }
+
+    function movePlayer(dx, dy) {
+      const level = levels[currentLevel];
+      const newX = playerPosition.x + dx;
+      const newY = playerPosition.y + dy;
+
+      if (
+        newY >= 0 && newY < level.maze.length &&
+        newX >= 0 && newX < level.maze[0].length &&
+        level.maze[newY][newX] !== 1
+      ) {
+        playerPosition = { x: newX, y: newY };
+        moveCount++;
+        const coordKey = `${newX},${newY}`;
+        if (level.challenges[coordKey] && !answeredChallenges[coordKey]) showChallenge(coordKey, level.challenges[coordKey]);
+        if (level.maze[newY][newX] === 2) completeLevel();
+        drawMaze();
+      }
+    }
+
+    function showChallenge(key, question) {
+      answeredChallenges[key] = true;
+      const response = prompt(`🌟 Think Zone Challenge:\n\n${question}`);
+      if (response && response.trim()) {
+        const tips = levels[currentLevel].tips;
+        const tip = tips[Math.floor(Math.random() * tips.length)];
+        tipBox.innerHTML = `<strong>💡 Wisdom Gained:</strong> ${tip}`;
+        tipBox.style.display = "block";
+      }
+    }
+
+    function completeLevel() {
+      const level = levels[currentLevel];
+      messageDiv.innerHTML = `🎉 Level Complete! You reached the goal in ${moveCount} moves!`;
+      reflection.innerHTML = `
+        <h3>🌟 Reflection Time</h3>
+        <p><strong>Question:</strong> ${level.reflection}</p>
+        <textarea id="reflectionText" rows="4" placeholder="Share your thoughts here..."></textarea>
+        <button onclick="submitReflection()">Submit Reflection</button>`;
+      reflection.style.display = "block";
+    }
+
+    function submitReflection() {
+      const text = document.getElementById("reflectionText").value.trim();
+      if (!text) {
+        alert("Please share your reflection before moving on!");
+        return;
+      }
+      reflection.innerHTML = `<p>Thank you for your reflection! 🌟</p>`;
+      nextBtn.style.display = "inline-block";
+    }
+
+    nextBtn.onclick = () => {
+      currentLevel++;
+      if (currentLevel >= levels.length) {
+        window.location.href = "game.html";
+        return;
+      }
+      startLevel();
+    };
+
+    function startLevel() {
+      moveCount = 0;
+      answeredChallenges = {};
+      playerPosition = { x: 1, y: 1 };
+      messageDiv.textContent = "";
+      tipBox.style.display = "none";
+      nextBtn.style.display = "none";
+      reflection.style.display = "none";
+      drawMaze();
+      gameContainer.focus();
+    }
+
+    function completeLevel() {
+        const level = levels[currentLevel];
+        messageDiv.innerHTML = `🎉 Level Complete! You reached the goal in ${moveCount} moves!`;
+        reflection.innerHTML = `
+            <h3>🌟 Reflection Time</h3>
+            <p><strong>Question:</strong> ${level.reflection}</p>
+            <textarea id="reflectionText" rows="4" placeholder="Share your thoughts here..."></textarea>
+            <button onclick="submitReflection()">Submit Reflection</button>`;
+        reflection.style.display = "block";
+
+        // Mark level as complete
+        localStorage.setItem('skillSprintComplete', 'true');
+    }
+
+    window.addEventListener("keydown", (e) => {
+      if (nextBtn.style.display === "inline-block") return;
+      switch (e.key) {
+        case "ArrowUp": movePlayer(0, -1); break;
+        case "ArrowDown": movePlayer(0, 1); break;
+        case "ArrowLeft": movePlayer(-1, 0); break;
+        case "ArrowRight": movePlayer(1, 0); break;
+        default: return;
+      }
+      e.preventDefault();
+    });
+
+    document.addEventListener("DOMContentLoaded", startLevel);
+  </script>
+</body>
+</html>

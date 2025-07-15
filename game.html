@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>🌲 Crystal Keepers 🌲</title>
+  <style>
+    body {
+      background: linear-gradient(#0b3d0b, #1e1e1e);
+      color: #e0f7da;
+      font-family: 'Papyrus', fantasy, serif;
+      text-align: center;
+      margin: 0;
+      padding: 30px 20px;
+      position: relative;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(2px 2px at 20px 30px, #66bb6a, transparent),
+                        radial-gradient(2px 2px at 40px 70px, #81c784, transparent),
+                        radial-gradient(1px 1px at 90px 40px, #a5d6a7, transparent),
+                        radial-gradient(1px 1px at 130px 80px, #c8e6c9, transparent);
+      background-repeat: repeat;
+      background-size: 75px 100px;
+      opacity: 0.3;
+      z-index: -1;
+      animation: sparkle 4s linear infinite;
+    }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.6; }
+    }
+
+    h1 {
+      font-size: 2.5em;
+      color: #c8e6c9;
+      margin-bottom: 15px;
+      text-shadow: 0 0 15px #2e7d32, 2px 2px 4px rgba(0,0,0,0.8);
+      font-weight: bold;
+    }
+
+    p {
+      color: #c8e6c9;
+      font-size: 1.2em;
+      margin-bottom: 35px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+    }
+
+    .level {
+      background: linear-gradient(135deg, #183d18 0%, #2e7d32 100%);
+      border: 3px solid #2e7d32;
+      border-radius: 12px;
+      padding: 25px;
+      margin: 20px auto;
+      width: 90%;
+      max-width: 500px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 25px rgba(46, 125, 50, 0.6), inset 0 0 20px rgba(200, 230, 201, 0.1);
+      position: relative;
+      overflow: hidden;
+      font-size: 1.1em;
+      color: #e0f7da;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+
+    .level::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #2e7d32, #66bb6a, #2e7d32, #66bb6a);
+      border-radius: 12px;
+      z-index: -1;
+      animation: borderGlow 3s linear infinite;
+    }
+
+    @keyframes borderGlow {
+      0%, 100% { opacity: 0.8; }
+      50% { opacity: 1; }
+    }
+
+    .level:hover {
+      background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
+      transform: scale(1.05) translateY(-5px);
+      box-shadow: 0 10px 35px rgba(46, 125, 50, 0.8), inset 0 0 30px rgba(200, 230, 201, 0.2);
+    }
+
+    .completed {
+      border-color: #ffd700;
+      background: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), inset 0 0 25px rgba(255, 255, 255, 0.1);
+    }
+
+    .completed::before {
+      background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700, #ffed4e);
+    }
+
+    .level small {
+      display: block;
+      margin-top: 10px;
+      color: #c8e6c9;
+      font-size: 0.9em;
+      font-style: italic;
+    }
+
+    .crystals {
+      margin-top: 40px;
+      padding: 20px;
+      background: rgba(24, 61, 24, 0.6);
+      border-radius: 15px;
+      border: 2px solid #2e7d32;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .crystal {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      margin: 0 15px;
+      background: radial-gradient(circle at 30% 30%, #e8f5e8, #4caf50, #2e7d32);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      opacity: 0.3;
+      filter: grayscale(100%);
+      transition: all 0.5s ease;
+      position: relative;
+      border: 2px solid #2e7d32;
+    }
+
+    .crystal::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 30px;
+      height: 30px;
+      background-image: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=100&h=100&fit=crop&crop=center');
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      opacity: 0.5;
+      border: 2px solid #2e7d32;
+    }
+
+    .crystal.collected {
+      opacity: 1;
+      filter: none;
+      animation: crystalPulse 2s ease-in-out infinite;
+      box-shadow: 0 0 20px rgba(76, 175, 80, 0.8);
+    }
+
+    .crystal.collected::before {
+      opacity: 1;
+      box-shadow: 0 0 10px rgba(76, 175, 80, 0.8);
+    }
+
+    @keyframes crystalPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    #finishBtn {
+      display: none;
+      margin-top: 40px;
+      padding: 15px 35px;
+      font-size: 1.3em;
+      background: linear-gradient(135deg, #2e7d32 0%, #66bb6a 100%);
+      color: #e0f7da;
+      border: 3px solid #2e7d32;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 0 25px rgba(46, 125, 50, 0.6);
+      transition: all 0.3s ease;
+      font-family: 'Papyrus', fantasy, serif;
+      font-weight: bold;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+
+    #finishBtn:hover {
+      background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+      transform: scale(1.05);
+      box-shadow: 0 0 35px rgba(46, 125, 50, 0.9);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🌲 Crystal Quest 🌲</h1>
+  <p>Complete all 3 forest challenges to earn the enchanted crystals and restore the kingdom!</p>
+
+  <div id="level1" class="level" onclick="goToLevel(1)">
+    🐾 Goal Grove<br><small>Race through the forest and set new goals.</small>
+  </div>
+
+  <div id="level2" class="level" onclick="goToLevel(2)">
+    🛠️ Reflection Maze<br><small>Reflect on your mindset and your goals to make your way to the target.</small>
+  </div>
+
+  <div id="level3" class="level" onclick="goToLevel(3)">
+    🧘 Mindset Mountain<br><small>Climb the peak of wisdom through reflection and growth.</small>
+  </div>
+
+  <div class="crystals">
+    <div id="crystal1" class="crystal"></div>
+    <div id="crystal2" class="crystal"></div>
+    <div id="crystal3" class="crystal"></div>
+  </div>
+
+  <button id="finishBtn" onclick="finishGame()">🎉 Finish Your Quest</button>
+
+  <script>
+    const levelInfo = [
+      { key: 'goalKartComplete', element: 'level1', crystal: 'crystal1', url: 'goal-kart.html' },
+      { key: 'skillSprintComplete', element: 'level2', crystal: 'crystal2', url: 'skill-sprint.html' },
+      { key: 'mindsetMountainComplete', element: 'level3', crystal: 'crystal3', url: 'mindset-mountain.html' },
+    ];
+
+    function updateUI() {
+      let allComplete = true;
+
+      levelInfo.forEach(level => {
+        const isComplete = localStorage.getItem(level.key) === 'true';
+        if (isComplete) {
+          document.getElementById(level.element).classList.add('completed');
+          document.getElementById(level.crystal).classList.add('collected');
+        } else {
+          allComplete = false;
+        }
+      });
+
+      if (allComplete) {
+        document.getElementById("finishBtn").style.display = "inline-block";
+      }
+    }
+
+    function goToLevel(index) {
+      window.location.href = levelInfo[index - 1].url;
+    }
+
+    function finishGame() {
+      // Check if all levels are truly complete
+      const allComplete = levelInfo.every(level => localStorage.getItem(level.key) === 'true');
+      
+      if (allComplete) {
+        alert("✨ You have united the crystals and saved the realm! ✨");
+        window.location.href = "outro.html";
+      } else {
+        alert("Complete all three crystal quests first!");
+      }
+    }
+
+    updateUI();
+  </script>
+
+</body>
+</html>

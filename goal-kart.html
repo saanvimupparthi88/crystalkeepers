@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🌳 Goal Grove 🌳</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 0;
+      background: 
+        linear-gradient(rgba(11, 61, 11, 0.8), rgba(30, 30, 30, 0.9)),
+        url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2560&q=80');
+      background-size: cover, cover;
+      background-position: center, center;
+      background-attachment: fixed;
+      font-family: 'Papyrus', fantasy, serif;
+      color: #e0f7da;
+      overflow: hidden;
+      user-select: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(2px 2px at 20px 30px, #66bb6a, transparent),
+                        radial-gradient(2px 2px at 40px 70px, #81c784, transparent),
+                        radial-gradient(1px 1px at 90px 40px, #a5d6a7, transparent);
+      background-repeat: repeat;
+      background-size: 100px 120px;
+      opacity: 0.2;
+      z-index: 1;
+      animation: magicalShimmer 6s ease-in-out infinite;
+    }
+
+    @keyframes magicalShimmer {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 0.4; }
+    }
+
+    h1 {
+      font-family: 'Papyrus', fantasy, serif;
+      font-size: 3rem;
+      margin: 20px 0 10px;
+      text-shadow: 0 0 15px #2e7d32, 2px 2px 6px #041f11;
+      z-index: 10;
+      color: #c8e6c9;
+      font-weight: bold;
+    }
+
+    #intro-screen {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, rgba(11, 61, 11, 0.95), rgba(30, 30, 30, 0.95));
+      color: #e0f7da;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+      padding: 20px;
+      text-align: center;
+      border: 3px solid #2e7d32;
+      box-shadow: 0 0 30px rgba(46, 125, 50, 0.6) inset;
+    }
+    #intro-screen h2 {
+      font-family: 'Papyrus', fantasy, serif;
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #c8e6c9;
+      text-shadow: 0 0 10px #2e7d32, 2px 2px 4px rgba(0,0,0,0.8);
+    }
+    #intro-screen ul {
+      text-align: left;
+      max-width: 500px;
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 30px;
+      font-size: 1.3rem;
+      color: #e0f7da;
+    }
+    #intro-screen li {
+      margin: 15px 0;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+    }
+    #start-btn {
+      background: linear-gradient(135deg, #2e7d32 0%, #66bb6a 100%);
+      border: 3px solid #2e7d32;
+      border-radius: 12px;
+      padding: 14px 30px;
+      font-size: 1.4rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(46, 125, 50, 0.6);
+      transition: all 0.3s ease;
+      color: #e0f7da;
+      font-family: 'Papyrus', fantasy, serif;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+    #start-btn:hover { 
+      background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(46, 125, 50, 0.8);
+    }
+
+    #game-container {
+      position: relative;
+      width: 800px;
+      height: 600px;
+      background: 
+        radial-gradient(ellipse 60px 120px at 10% 15%, rgba(11, 61, 11, 0.9), transparent),
+        radial-gradient(ellipse 80px 100px at 90% 25%, rgba(24, 61, 24, 0.8), transparent),
+        radial-gradient(ellipse 50px 90px at 20% 85%, rgba(46, 125, 50, 0.7), transparent),
+        radial-gradient(ellipse 70px 110px at 80% 90%, rgba(11, 61, 11, 0.8), transparent),
+        linear-gradient(to bottom, 
+          #0b3d0b 0%, 
+          #183d18 25%, 
+          #2e7d32 50%, 
+          #4caf50 75%, 
+          #66bb6a 100%);
+      border-radius: 20px;
+      border: 4px solid #8d6e63;
+      box-shadow: 
+        0 0 40px rgba(141, 110, 99, 0.6) inset, 
+        0 0 25px rgba(46, 125, 50, 0.8),
+        0 8px 32px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      z-index: 5;
+      display: none;
+      position: relative;
+    }
+
+    #game-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        /* Dense forest trees on sides */
+        radial-gradient(ellipse 50px 90px at 60px 160px, rgba(11, 61, 11, 0.9), transparent),
+        radial-gradient(ellipse 40px 80px at 30px 280px, rgba(24, 61, 24, 0.8), transparent),
+        radial-gradient(ellipse 55px 95px at 740px 180px, rgba(11, 61, 11, 0.9), transparent),
+        radial-gradient(ellipse 45px 85px at 770px 320px, rgba(24, 61, 24, 0.8), transparent),
+        /* Tree canopy shadows */
+        radial-gradient(ellipse 70px 50px at 120px 60px, rgba(0, 0, 0, 0.4), transparent),
+        radial-gradient(ellipse 65px 45px at 680px 90px, rgba(0, 0, 0, 0.4), transparent),
+        /* Mystical forest glow */
+        radial-gradient(circle 20px at 250px 140px, rgba(76, 175, 80, 0.15), transparent),
+        radial-gradient(circle 15px at 380px 200px, rgba(129, 199, 132, 0.12), transparent),
+        radial-gradient(circle 25px at 520px 160px, rgba(102, 187, 106, 0.18), transparent),
+        radial-gradient(circle 12px at 620px 180px, rgba(165, 214, 167, 0.14), transparent);
+      background-repeat: no-repeat;
+      opacity: 0.9;
+      z-index: 1;
+      animation: forestMagic 12s linear infinite;
+    }
+
+    @keyframes forestMagic {
+      0% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-200px) scale(1.02); }
+      100% { transform: translateY(-400px) scale(1); }
+    }
+
+    .lane {
+      position: absolute;
+      width: 33.33%;
+      height: 600px;
+      top: 0;
+      pointer-events: none;
+      z-index: 4;
+      box-sizing: border-box;
+      background: linear-gradient(to bottom, 
+        transparent 0%, 
+        rgba(139, 117, 82, 0.3) 20%,
+        rgba(160, 133, 90, 0.4) 40%,
+        rgba(141, 110, 99, 0.5) 60%,
+        rgba(101, 87, 74, 0.4) 80%,
+        transparent 100%);
+    }
+    
+    .lane::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 80%;
+      height: 100%;
+      transform: translateX(-50%);
+      background: 
+        /* Dirt road texture */
+        repeating-linear-gradient(
+          to bottom,
+          rgba(139, 117, 82, 0.6) 0px,
+          rgba(160, 133, 90, 0.5) 8px,
+          rgba(141, 110, 99, 0.7) 16px,
+          rgba(101, 87, 74, 0.6) 24px,
+          rgba(121, 101, 78, 0.5) 32px
+        ),
+        /* Tire tracks and path marks */
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0px,
+          rgba(0, 0, 0, 0.1) 2px,
+          transparent 4px,
+          transparent 20px
+        );
+      border-left: 3px solid rgba(76, 62, 45, 0.8);
+      border-right: 3px solid rgba(76, 62, 45, 0.8);
+      border-radius: 4px;
+      opacity: 0.9;
+      box-shadow: 
+        inset 0 0 20px rgba(0, 0, 0, 0.2),
+        inset 3px 0 8px rgba(0, 0, 0, 0.3),
+        inset -3px 0 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .lane-0 { left: 0; }
+    .lane-1 { left: 33.33%; }
+    .lane-2 { left: 66.66%; }
+
+    #kart {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 90px;
+      transition: left 0.3s ease, transform 0.3s ease;
+      filter: drop-shadow(0 0 20px rgba(141, 110, 99, 0.8)) drop-shadow(3px 6px 8px rgba(0,0,0,0.6));
+      z-index: 10;
+      cursor: pointer;
+      border-radius: 15px;
+      background: linear-gradient(135deg, 
+        #8d6e63 0%, 
+        #a1887f 25%, 
+        #8d6e63 50%, 
+        #6d4c41 75%, 
+        #5d4037 100%);
+      border: 3px solid #5d4037;
+      box-shadow: 
+        inset 0 0 20px rgba(255, 255, 255, 0.1),
+        inset 0 -10px 20px rgba(0, 0, 0, 0.3),
+        0 0 30px rgba(141, 110, 99, 0.6);
+    }
+    
+    #kart::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 80%;
+      height: 70%;
+      transform: translate(-50%, -50%);
+      background: repeating-linear-gradient(
+        90deg,
+        #a1887f 0px,
+        #8d6e63 3px,
+        #6d4c41 6px,
+        #8d6e63 9px
+      );
+      border-radius: 8px;
+      box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.4);
+    }
+    
+    #kart::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2.8rem;
+      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.5));
+      z-index: 2;
+      animation: forestCreatureGlow 2s ease-in-out infinite;
+    }
+    
+    @keyframes forestCreatureGlow {
+      0%, 100% { 
+        text-shadow: 0 0 10px rgba(76, 175, 80, 0.8);
+        transform: translate(-50%, -50%) scale(1);
+      }
+      50% { 
+        text-shadow: 0 0 20px rgba(76, 175, 80, 1), 0 0 30px rgba(200, 230, 201, 0.8);
+        transform: translate(-50%, -50%) scale(1.05);
+      }
+    }
+    
+    .wooden-wheel {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: radial-gradient(circle, #6d4c41 30%, #5d4037 70%);
+      border: 2px solid #3e2723;
+      border-radius: 50%;
+      box-shadow: 
+        inset 0 0 5px rgba(0, 0, 0, 0.5),
+        0 0 10px rgba(109, 76, 65, 0.6);
+    }
+    
+    .wooden-wheel:nth-child(1) {
+      bottom: -5px;
+      left: 15px;
+      animation: wheelSpin 3s linear infinite;
+    }
+    
+    .wooden-wheel:nth-child(2) {
+      bottom: -5px;
+      right: 15px;
+      animation: wheelSpin 3s linear infinite reverse;
+    }
+    
+    @keyframes wheelSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .obstacle {
+      position: absolute;
+      width: 30%;
+      margin-left: 0;
+      padding: 8px 10px;
+      font-weight: 700;
+      font-size: 0.75rem;
+      color: #e0f7da;
+      border-radius: 12px;
+      text-align: center;
+      user-select: none;
+      pointer-events: none;
+      z-index: 8;
+      animation: mysticalFloat 3s infinite ease-in-out;
+      box-shadow: 0 0 15px rgba(46, 125, 50, 0.8), inset 0 0 10px rgba(200, 230, 201, 0.2);
+      background: linear-gradient(135deg, rgba(24, 61, 24, 0.9) 0%, rgba(46, 125, 50, 0.9) 100%);
+      border: 2px solid #2e7d32;
+      font-family: 'Papyrus', fantasy, serif;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+    @keyframes mysticalFloat {
+      0%, 100% { 
+        transform: translateY(0) scale(1); 
+        box-shadow: 0 0 15px rgba(46, 125, 50, 0.8);
+      }
+      50% { 
+        transform: translateY(-8px) scale(1.05); 
+        box-shadow: 0 0 25px rgba(46, 125, 50, 1);
+      }
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: radial-gradient(circle, #ffd700 0%, #ffeb3b 30%, #66bb6a 60%, transparent 100%);
+      border-radius: 50%;
+      box-shadow: 0 0 20px #ffd700, 0 0 30px #66bb6a;
+      animation: enchantedSparkleBurst 2s ease-out forwards;
+      z-index: 15;
+    }
+    
+    .sparkle::before {
+      content: '✨';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+    
+    @keyframes enchantedSparkleBurst {
+      0% { 
+        transform: scale(0) rotate(0deg); 
+        opacity: 1; 
+        box-shadow: 0 0 20px #ffd700, 0 0 30px #66bb6a;
+      }
+      25% {
+        transform: scale(1.2) rotate(90deg);
+        opacity: 0.9;
+        box-shadow: 0 0 30px #ffd700, 0 0 40px #66bb6a;
+      }
+      75% {
+        transform: scale(1.8) rotate(270deg);
+        opacity: 0.6;
+        box-shadow: 0 0 40px #ffd700, 0 0 50px #66bb6a;
+      }
+      100% {
+        transform: translate(calc(-40px + 80px * var(--x, 0.5)), calc(-40px + 80px * var(--y, 0.5))) scale(0) rotate(360deg);
+        opacity: 0;
+        box-shadow: 0 0 10px #ffd700, 0 0 15px #66bb6a;
+      }
+    }
+    
+    /* Forest ambiance elements */
+    .floating-leaf {
+      position: absolute;
+      font-size: 1.5rem;
+      opacity: 0.6;
+      animation: leafFloat 8s ease-in-out infinite;
+      z-index: 3;
+    }
+    
+    @keyframes leafFloat {
+      0%, 100% { 
+        transform: translateY(0) translateX(0) rotate(0deg); 
+        opacity: 0.6; 
+      }
+      25% { 
+        transform: translateY(-20px) translateX(10px) rotate(5deg); 
+        opacity: 0.8; 
+      }
+      50% { 
+        transform: translateY(-10px) translateX(-5px) rotate(-3deg); 
+        opacity: 0.7; 
+      }
+      75% { 
+        transform: translateY(-30px) translateX(15px) rotate(8deg); 
+        opacity: 0.9; 
+      }
+    }
+
+    #message {
+      margin-top: 20px;
+      font-size: 1.4rem;
+      min-height: 2.5em;
+      color: #c8e6c9;
+      width: 800px;
+      max-width: 95vw;
+      text-align: center;
+      font-weight: 700;
+      text-shadow: 0 0 15px #2e7d32, 2px 2px 4px rgba(0,0,0,0.8);
+      user-select: none;
+      z-index: 10;
+      background: rgba(24, 61, 24, 0.6);
+      padding: 15px;
+      border-radius: 12px;
+      border: 2px solid #2e7d32;
+      box-shadow: 0 0 20px rgba(46, 125, 50, 0.4);
+      font-family: 'Papyrus', fantasy, serif;
+    }
+
+    .intro-slide {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: rgba(24, 61, 24, 0.3);
+      border-radius: 20px;
+      padding: 30px;
+      border: 2px solid #2e7d32;
+      box-shadow: 0 0 30px rgba(46, 125, 50, 0.5);
+    }
+
+    .intro-slide h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #c8e6c9;
+      text-shadow: 0 0 10px #2e7d32, 2px 2px 4px rgba(0,0,0,0.8);
+    }
+
+    .intro-slide ul {
+      text-align: left;
+      max-width: 500px;
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 30px;
+      font-size: 1.3rem;
+      color: #e0f7da;
+    }
+
+    .intro-slide li {
+      margin: 15px 0;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+    }
+
+    .slide-btn {
+      background: linear-gradient(135deg, #2e7d32 0%, #66bb6a 100%);
+      border: 3px solid #2e7d32;
+      border-radius: 12px;
+      padding: 14px 30px;
+      font-size: 1.4rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(46, 125, 50, 0.6);
+      transition: all 0.3s ease;
+      color: #e0f7da;
+      font-family: 'Papyrus', fantasy, serif;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    }
+    .slide-btn:hover { 
+      background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(46, 125, 50, 0.8);
+    }
+  </style>
+</head>
+<body>
+  <h1>🦊 Goal Grove Kart Quest!</h1>
+
+  <div id="intro-screen" role="dialog" aria-modal="true">
+      <!-- Slide 1: Welcome -->
+      <div id="slide-1" class="intro-slide">
+        <h2>🌲 Welcome to Goal Grove! 🌲</h2>
+        <p>Get ready for an exciting adventure where you'll learn to create SMART goals while racing through the enchanted forest!</p>
+    
+        <p>You'll be driving a magical fox kart through the grove, collecting the right answers to build your perfect goal.</p>
+        <button class="slide-btn" onclick="nextSlide()">Next 🦊</button>
+      </div>
+    
+      <!-- Slide 3: Example -->
+      <div id="slide-2" class="intro-slide" style="display: none;">
+        <h2>📚 Goal Setting</h2>
+        <p>Let's take a look at SMART goals!:</p>
+  
+        <ul style="text-align: left; max-width: 400px; margin: 20px auto;">
+          <li>Setting your own goals based on what you want to accomplish can be very valuable.</li>
+           <li>Today we'll learn how, using SMART goals!</li>
+          <li>SMART stands for specific, measurable, achievable, relevant, and time-bound.</li>
+      
+
+        </ul>
+        <button class="slide-btn" onclick="nextSlide()">Got it! 📖</button>
+      </div>
+    <!-- Slide 3: What are SMART Goals Introduction -->
+    <div id="slide-3" class="intro-slide" style="display: none;">
+      <h2>🎯 What is a SMART Goal?</h2>
+      <p>SMART goals are special goals that help you succeed!</p>
+      <p>Each letter in SMART stands for an important part of a good goal.</p>
+      <p>Let's learn about each part one by one!</p>
+      <div style="font-size: 3rem; margin: 20px 0;">🎯</div>
+      <button class="slide-btn" onclick="nextSlide()">Show me S! 📝</button>
+    </div>
+
+    <!-- Slide 4: S = Specific -->
+    <div id="slide-4" class="intro-slide" style="display: none;">
+      <h2>📝 S - Specific</h2>
+      <p><strong>What exactly do you want to do?</strong></p>
+      <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin: 15px 0;">
+        <p>❌ Vague: "I want to be better at art"</p>
+        <p>✅ Specific: "I want to draw one complete comic page"</p>
+      </div>
+      <p>Being specific helps you know exactly what to work on!</p>
+      <button class="slide-btn" onclick="nextSlide()">Show me M! 📊</button>
+    </div>
+
+    <!-- Slide 5: M = Measurable -->
+    <div id="slide-5" class="intro-slide" style="display: none;">
+      <h2>📊 M - Measurable</h2>
+      <p><strong>How will you know you're making progress?</strong></p>
+      <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin: 15px 0;">
+        <p>❌ Hard to measure: "Read more books"</p>
+        <p>✅ Measurable: "Read 2 books this month"</p>
+      </div>
+      <p>Numbers help you track your progress and celebrate wins!</p>
+      <button class="slide-btn" onclick="nextSlide()">Show me A! 💪</button>
+    </div>
+
+    <!-- Slide 6: A = Achievable -->
+    <div id="slide-6" class="intro-slide" style="display: none;">
+      <h2>💪 A - Achievable</h2>
+      <p><strong>Can you really do it?</strong></p>
+      <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin: 15px 0;">
+        <p>❌ Too hard: "Write 10 books this week"</p>
+        <p>✅ Achievable: "Write one short story this week"</p>
+      </div>
+      <p>Pick goals that challenge you but are still possible!</p>
+      <button class="slide-btn" onclick="nextSlide()">Show me R! ❤️</button>
+    </div>
+
+    <!-- Slide 7: R = Relevant -->
+    <div id="slide-7" class="intro-slide" style="display: none;">
+      <h2>❤️ R - Relevant</h2>
+      <p><strong>Why does this goal matter to you?</strong></p>
+      <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin: 15px 0;">
+        <p>❌ Not meaningful: "Learn guitar because my friend said so"</p>
+        <p>✅ Relevant: "Learn guitar because I love music"</p>
+      </div>
+      <p>Goals that matter to YOU are easier to stick with!</p>
+      <button class="slide-btn" onclick="nextSlide()">Show me T! ⏰</button>
+    </div>
+
+    <!-- Slide 8: T = Time-bound -->
+    <div id="slide-8" class="intro-slide" style="display: none;">
+      <h2>⏰ T - Time-bound</h2>
+      <p><strong>When will you finish?</strong></p>
+      <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin: 15px 0;">
+        <p>❌ No deadline: "Learn to cook someday"</p>
+        <p>✅ Time-bound: "Learn to cook pasta by Friday"</p>
+      </div>
+      <p>Deadlines help you stay focused and motivated!</p>
+      <button class="slide-btn" onclick="nextSlide()">Ready to play! 🎮</button>
+    </div>
+
+
+      <!-- Slide 9: How to Play -->
+      <div id="slide-9" class="intro-slide" style="display: none;">
+        <h2>🎮 How to Play</h2>
+        <p>Here's how the Goal Grove racing game works:</p>
+        <ul style="text-align: left; max-width: 450px; margin: 20px auto;">
+          <li>🏁 Use <strong>← and →</strong> arrow keys to move your kart</li>
+          <li>🎯 Race towards the <strong>correct answers</strong> for each SMART goal part</li>
+          <li>❌ Avoid the wrong answers or you'll need to try again</li>
+          <li>🏆 Complete all 5 parts to build your perfect SMART goal</li>
+        </ul>
+        <button class="slide-btn" onclick="startGame()">Start My Goal Quest 🚀</button>
+      </div>
+    </div>
+
+  <div id="game-container">
+    <div class="lane lane-0"></div>
+    <div class="lane lane-1"></div>
+    <div class="lane lane-2"></div>
+    <div id="kart">
+      <div class="wooden-wheel"></div>
+      <div class="wooden-wheel"></div>
+    </div>
+  </div>
+
+  <div id="message">Use ← and → keys to move. Dodge wrong answers and race to the correct ones!</div>
+
+  <button id="next-btn" style="display:none; margin-top: 20px; padding: 12px 24px; font-size: 1.2rem; background-color: #81c784; border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 4px 8px #33691e;">Next 🌲</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script>
+    const startBtn = document.getElementById("start-btn");
+    const introScreen = document.getElementById("intro-screen");
+    const gameContainer = document.getElementById("game-container");
+    const kart = document.getElementById("kart");
+    const message = document.getElementById("message");
+
+    const lanePositionsPx = [0, 800/3, 800*2/3];
+
+    const smartSteps = [
+      {
+        letter: "Specific",
+        question: "What is a specific goal you want to achieve?",
+        correct: "Draw one full comic page",
+        choices: [
+          "Be more creative",
+          "Draw one full comic page",
+          "Try to draw sometimes"
+        ]
+      },
+      {
+        letter: "Measurable",
+        question: "How will you measure it?",
+        correct: "Finish 2 pages",
+        choices: [
+          "Sit near paper",
+          "Finish 2 pages",
+          "Think about drawing"
+        ]
+      },
+      {
+        letter: "Achievable",
+        question: "How can you achieve it?",
+        correct: "Spend 20 mins a day",
+        choices: [
+          "Complain loudly",
+          "Spend 20 mins a day",
+          "Look at your pens"
+        ]
+      },
+      {
+        letter: "Relevant",
+        question: "Why does it matter to you?",
+        correct: "I want to get better",
+        choices: [
+          "It’s boring",
+          "I want to get better",
+          "My friend said so"
+        ]
+      },
+      {
+        letter: "Time-bound",
+        question: "When will you finish?",
+        correct: "Before my birthday",
+        choices: [
+          "Someday",
+          "Before my birthday",
+          "Whenever"
+        ]
+      }
+    ];
+
+    let currentStep = 0;
+    let currentLane = 1;
+    let obstacles = [];
+    let animating = false;
+    let currentSlide = 1;
+
+    function updateKartPosition() {
+      const laneLeft = lanePositionsPx[currentLane];
+      const kartWidth = kart.clientWidth;
+      kart.style.left = (laneLeft + (800/3)/2 - kartWidth/2) + "px";
+      kart.style.bottom = "20px";
+      kart.style.transform = "translateX(0)";
+    }
+
+    function showSparkles() {
+      for (let i = 0; i < 10; i++) {
+        const sparkle = document.createElement("div");
+        sparkle.className = "sparkle";
+        sparkle.style.left = (kart.offsetLeft + kart.clientWidth/2) + "px";
+        sparkle.style.bottom = "100px";
+        sparkle.style.setProperty('--x', Math.random());
+        sparkle.style.setProperty('--y', Math.random());
+        gameContainer.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 1000);
+      }
+    }
+
+    function createObstacles() {
+      clearObstacles();
+      const step = smartSteps[currentStep];
+      message.textContent = `Question: ${step.question}`;
+      const shuffled = step.choices.slice().sort(() => 0.5 - Math.random());
+      
+      // Create an array of lane indices and shuffle them
+      const laneIndices = [0, 1, 2];
+      for (let i = laneIndices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [laneIndices[i], laneIndices[j]] = [laneIndices[j], laneIndices[i]];
+      }
+      
+      shuffled.forEach((answer, i) => {
+        const obstacle = document.createElement("div");
+        obstacle.className = "obstacle";
+        obstacle.style.left = (lanePositionsPx[laneIndices[i]] + 8) + "px";
+        obstacle.style.bottom = "600px";
+        obstacle.textContent = answer;
+        obstacle.dataset.correct = (answer === step.correct) ? "true" : "false";
+        gameContainer.appendChild(obstacle);
+        obstacles.push(obstacle);
+      });
+    }
+
+    function clearObstacles() {
+      obstacles.forEach(o => o.remove());
+      obstacles = [];
+    }
+
+    function animateObstacles() {
+      return new Promise(resolve => {
+        let pos = 600;
+        const speed = 2;
+        function stepAnim() {
+          pos -= speed;
+          obstacles.forEach(o => o.style.bottom = pos + "px");
+          if (pos <= 90) {
+            checkCollision();
+            resolve();
+          } else {
+            requestAnimationFrame(stepAnim);
+          }
+        }
+        stepAnim();
+      });
+    }
+
+    function checkCollision() {
+      const kartLeft = lanePositionsPx[currentLane];
+      const collided = obstacles.find(o => Math.abs(parseInt(o.style.left) - kartLeft) < 30);
+      if (!collided) {
+        playWrong();
+        return;
+      }
+      if (collided.dataset.correct === "true") {
+        playCorrect();
+      } else {
+        playWrong();
+      }
+    }
+
+    function playCorrect() {
+      showSparkles();
+      message.textContent = `✅ Correct! ${smartSteps[currentStep].letter}: ${smartSteps[currentStep].question}`;
+      currentStep++;
+      clearObstacles();
+      if (currentStep === smartSteps.length) {
+        setTimeout(showSummary, 1300);
+      } else {
+        setTimeout(nextRound, 1300);
+      }
+    }
+
+    function playWrong() {
+      message.textContent = "❌ Oops! That’s not right, try again!";
+      shakeKart();
+      clearObstacles();
+      setTimeout(nextRound, 1600);
+    }
+
+    function shakeKart() {
+      let count = 0;
+      const maxShakes = 6;
+      const originalLeft = kart.style.left;
+      const shakeAmount = 10;
+      function doShake() {
+        if (count >= maxShakes) {
+          kart.style.left = originalLeft;
+          return;
+        }
+        const offset = (count % 2 === 0 ? shakeAmount : -shakeAmount);
+        kart.style.left = `calc(${originalLeft} + ${offset}px)`;
+        count++;
+        setTimeout(doShake, 50);
+      }
+      doShake();
+    }
+
+    window.addEventListener("keydown", e => {
+      if (animating || introScreen.style.display !== "none") return;
+      if (e.key === "ArrowLeft" && currentLane > 0) {
+        currentLane--;
+        animateKartMove();
+      } else if (e.key === "ArrowRight" && currentLane < 2) {
+        currentLane++;
+        animateKartMove();
+      }
+    });
+
+    function animateKartMove() {
+      animating = true;
+      kart.style.transform = "scale(1.15)";
+      updateKartPosition();
+      setTimeout(() => {
+        kart.style.transform = "scale(1)";
+        animating = false;
+      }, 250);
+    }
+
+    async function nextRound() {
+      createObstacles();
+      await animateObstacles();
+    }
+
+    function showSummary() {
+      message.textContent = `🎉 You finished your Forest Goal Quest!`;
+      confetti({ particleCount: 300, spread: 90, origin: { y: 0.6 } });
+
+      // Mark level as complete
+      localStorage.setItem('goalKartComplete', 'true');
+
+      const nextBtn = document.getElementById("next-btn");
+      nextBtn.style.display = "inline-block";
+      nextBtn.onclick = () => {
+        window.location.href = "game.html";
+      };
+    }
+
+    function startGame() {
+      introScreen.style.display = "none";
+      gameContainer.style.display = "block";
+      currentStep = 0;
+      currentLane = 1;
+      updateKartPosition();
+      message.textContent = "Use ← and → keys to move. Dodge wrong answers and race to the correct ones!";
+      nextRound();
+      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+    }
+
+      function nextSlide() {
+        document.getElementById('slide-' + currentSlide).style.display = "none";
+        currentSlide++;
+        document.getElementById('slide-' + currentSlide).style.display = "flex";
+
+        // If on the last slide, change the button to start game
+        if (currentSlide === 9) {
+          document.querySelector('.slide-btn').textContent = "Start My Goal Quest 🚀";
+          document.querySelector('.slide-btn').onclick = startGame;
+        }
+      }
+
+    //startBtn.addEventListener("click", startGame);
+    window.onload = () => {
+      updateKartPosition();
+    };
+  </script>
+</body>
+</html>

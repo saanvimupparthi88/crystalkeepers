@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>✨ Final Journey - Crystal Keeper Outro</title>
+  <style>
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        padding: 20px;
+        background: 
+          radial-gradient(ellipse 140px 220px at 25% 25%, rgba(11, 61, 11, 0.8), transparent),
+          radial-gradient(ellipse 110px 190px at 75% 15%, rgba(24, 61, 24, 0.7), transparent),
+          radial-gradient(ellipse 130px 170px at 15% 75%, rgba(46, 125, 50, 0.6), transparent),
+          radial-gradient(ellipse 100px 150px at 85% 85%, rgba(11, 61, 11, 0.7), transparent),
+          linear-gradient(135deg, #0b3d0b, #1e1e1e);
+        color: #e0f7da;
+        font-family: 'Papyrus', fantasy, serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        position: relative;
+      }
+
+      h1 {
+        font-size: 3em;
+        margin-top: 20px;
+        color: #c8e6c9;
+        text-shadow: 0 0 15px #2e7d32, 2px 2px 4px rgba(0,0,0,0.8);
+        font-weight: bold;
+      }
+
+      #cutscene {
+        max-width: 640px;
+        margin: 0 auto; 
+        border: 2px solid #446650; 
+        border-radius: 16px; 
+        padding: 25px; 
+        background: rgba(34, 56, 40, 0.95); 
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.4);
+      }
+
+      button {
+        background: linear-gradient(135deg, #2e7d32 0%, #66bb6a 100%);
+        color: #e0f7da;
+        border: 3px solid #2e7d32;
+        border-radius: 12px;
+        padding: 14px 30px;
+        font-size: 1.4rem;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0 0 20px rgba(46, 125, 50, 0.6);
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        background: linear-gradient(135deg, #66bb6a 0%, #81c784 100%);
+        transform: scale(1.05);
+        box-shadow: 0 0 25px rgba(46, 125, 50, 0.8);
+      }
+  </style>
+</head>
+<body>
+  <div id="cutscene">
+    <img id="sceneIMG" src="images/IMG_0005 (1).jpg" alt="Cutscene Image" />
+    <p id="captionText">Peace returns to the land...</p>
+
+    <div id="credits">
+      <h2>🌟 Credits</h2>
+      <p>Developer: <strong>Saanvi Mupparthi</strong></p>
+      <p>Artist: <strong>Anushka Thammineni</strong></p>
+      <p>Special Thanks: <strong>Keri Goodfriend</strong></p>
+    </div>
+
+    <button onclick="playAgain()">Play Again!</button>
+  </div>
+
+  <script>
+    function playAgain() {
+      window.location.href = "skill-sprint.html"; // Redirect to the skill sprint or reset the game
+    }
+
+    // JavaScript functions for handling the scene changes.
+    const scenes = [
+      "IMG_0024.jpg",
+      "IMG_0052.jpg",
+      "IMG_0024.jpg", 
+      "IMG_0048.jpg", 
+      "IMG_0058.jpg",
+      "outro.png"
+    ];
+
+    const captions = [
+      "You did it, adventurer!",
+      "With the crystals united, the wizard's power was shattered.",
+      "The kingdom is safe once more, thanks to your courage and strength.",
+      "Legends will be told of your journey for generations to come.",
+      "For now, rest easy, hero. You are a true Crystal Keeper."
+    ];
+
+    let index = 0;
+    const creditsDiv = document.getElementById("credits");
+    const sceneIMG = document.getElementById("sceneIMG");
+    const captionText = document.getElementById("captionText");
+
+    function updateScene() {
+      if (index < captions.length) {
+        creditsDiv.style.display = "none";
+        sceneIMG.style.display = "block";
+        captionText.style.display = "block";
+
+        sceneIMG.src = "images/" + scenes[index];
+        captionText.innerText = captions[index];
+      } else {
+        sceneIMG.style.display = "none";
+        captionText.style.display = "none";
+        creditsDiv.style.display = "block";
+      }
+    }
+
+    function nextScene() {
+      if (index < captions.length) {
+        index++;
+        updateScene();
+      } else {
+        window.location.href = "index.html"; // Optionally redirect here if you want to
+      }
+    }
+
+    function prevScene() {
+      if (index > 0) {
+        index--;
+        updateScene();
+      }
+    }
+
+    updateScene();
+  </script>
+</body>
+</html>
